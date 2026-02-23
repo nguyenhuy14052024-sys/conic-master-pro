@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conic Master Pro - Exam & Training Edition</title>
+    <style>
+        :root {
+            --bg: #0f172a; --card: #1e293b; --primary: #38bdf8;
+            --elip: #10b981; --hyper: #ef4444; --para: #f59e0b;
+            --accent: #8b5cf6;
+        }
+        body {
+            background: var(--bg); color: #f8fafc; font-family: 'Segoe UI', sans-serif;
+            display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0;
+        }
+        .tool-box, .deep-dive, .feature-box, .exam-box, .example-box {
+            background: var(--card); padding: 25px; border-radius: 20px;
+            width: 100%; max-width: 900px; border: 1px solid #334155; margin-bottom: 30px;
+            box-sizing: border-box;
+        }
+        .input-group { display: flex; gap: 10px; margin: 20px 0; justify-content: center; align-items: center; flex-wrap: wrap; }
+        input { background: #0f172a; border: 1px solid #334155; color: white; padding: 10px; border-radius: 8px; width: 60px; text-align: center; }
+        button { background: var(--primary); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; color: #000; }
+        button:hover { opacity: 0.8; transform: scale(1.05); }
+
+        .mindmap-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 100%; max-width: 950px; margin-bottom: 40px; }
+        .card { background: var(--card); border-radius: 16px; padding: 20px; border-left: 6px solid #ccc; }
+        .elip-style { border-color: var(--elip); } .hyper-style { border-color: var(--hyper); } .para-style { border-color: var(--para); }
+        .formula-box { background: #000; padding: 10px; border-radius: 8px; color: #38bdf8; font-family: monospace; text-align: center; margin: 10px 0; }
+        
+        .highlight { color: var(--primary); font-weight: bold; }
+        .important { color: #f472b6; text-decoration: underline; }
+
+        #timer { font-size: 1.5rem; font-weight: bold; color: var(--hyper); text-align: center; margin-bottom: 10px; }
+        .quiz-option { 
+            display: block; width: 100%; padding: 12px; margin: 8px 0; 
+            background: #334155; border: 1px solid #475569; color: white; 
+            text-align: left; border-radius: 8px; cursor: pointer;
+        }
+        .quiz-option:hover { background: #475569; }
+        .hidden { display: none; }
+        .correct { background: var(--elip) !important; color: white; }
+        .wrong { background: var(--hyper) !important; color: white; }
+        
+        .practice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .practice-card { background: #0f172a; padding: 15px; border-radius: 12px; border: 1px dashed var(--primary); }
+        .solution { color: var(--elip); margin-top: 10px; font-style: italic; display: none; }
+
+        .example-item { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #475569; }
+        .example-item:last-child { border-bottom: none; }
+
+        footer { margin-top: 50px; padding: 20px; opacity: 0.5; font-size: 0.8rem; border-top: 1px solid #334155; width: 100%; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="tool-box">
+        <h2>Máy phân tích Conic</h2>
+        <div class="input-group">
+            <input type="number" id="coeffA" placeholder="A"> <span>x&sup2; +</span>
+            <input type="number" id="coeffC" placeholder="C"> <span>y&sup2; + ... = 0</span>
+            <button onclick="identifyConic()">Phân tích</button>
+        </div>
+        <div id="result" style="display:none; padding: 10px; border-radius: 8px; background: #000;"></div>
+    </div>
+
+    <div class="mindmap-container">
+        <div class="card elip-style">
+            <h3>ELIP (E)</h3>
+            <div class="formula-box">x&sup2;/a&sup2; + y&sup2;/b&sup2; = 1</div>
+            <p><small>Điều kiện: <span class="highlight">a > b > 0</span></small></p>
+            <ul>
+                <li><b>Trục lớn:</b> 2a | <b>Trục nhỏ:</b> 2b</li>
+                <li><b>Tiêu cự:</b> 2c với <span class="important">c&sup2; = a&sup2; - b&sup2;</span></li>
+                <li><b>Tiêu điểm:</b> F₁(-c;0), F₂(c;0)</li>
+                <li><b>Tâm sai:</b> e = c/a (<span class="highlight">0 < e < 1</span>)</li>
+                <li><b>Đỉnh:</b> A₁(-a;0), A₂(a;0), B₁(0;-b), B₂(0;b)</li>
+            </ul>
+        </div>
+
+        <div class="card hyper-style">
+            <h3>HYPERBOL (H)</h3>
+            <div class="formula-box">x&sup2;/a&sup2; - y&sup2;/b&sup2; = 1</div>
+            <p><small>Điều kiện: <span class="highlight">a, b > 0</span></small></p>
+            <ul>
+                <li><b>Trục thực:</b> 2a | <b>Trục ảo:</b> 2b</li>
+                <li><b>Tiêu cự:</b> 2c với <span class="important">c&sup2; = a&sup2; + b&sup2;</span></li>
+                <li><b>Tiêu điểm:</b> F₁(-c;0), F₂(c;0)</li>
+                <li><b>Tiệm cận:</b> <span class="highlight">y = &plusmn;(b/a)x</span></li>
+                <li><b>Tâm sai:</b> e = c/a (<span class="highlight">e > 1</span>)</li>
+            </ul>
+        </div>
+
+        <div class="card para-style">
+            <h3>PARABOL (P)</h3>
+            <div class="formula-box">y&sup2; = 2px</div>
+            <p><small>Điều kiện: <span class="highlight">p > 0 (Tham số tiêu)</span></small></p>
+            <ul>
+                <li><b>Tiêu điểm:</b> <span class="important">F(p/2; 0)</span></li>
+                <li><b>Đường chuẩn:</b> Δ: <span class="highlight">x = -p/2</span></li>
+                <li><b>Tâm sai:</b> e = 1 (mọi Parabol)</li>
+                <li><b>Bán kính tiêu:</b> Với M(x;y) thuộc (P) thì <span class="highlight">MF = x + p/2</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="deep-dive">
+        <h3>Hướng dẫn phương pháp giải</h3>
+        <p><b>1. Dạng xác định yếu tố:</b> Từ PT chính tắc, suy ra a&sup2;, b&sup2; (hoặc p). Lưu ý tính <span class="highlight">c</span> cẩn thận theo từng loại hình.</p>
+        <hr style="border: 0.1px solid #334155; margin: 15px 0;">
+        <p><b>2. Dạng lập phương trình:</b> 
+            <br>* Bước 1: Gọi dạng PT chính tắc tương ứng.
+            <br>* Bước 2: Tìm các tham số (a, b hoặc p) dựa trên dữ kiện đề bài (điểm đi qua, tiêu điểm, trục...).
+            <br>* Bước 3: Thay vào PT mẫu. <span class="important">Lưu ý Elip và Hypebol cần a, b > 0</span>.
+        </p>
+    </div>
+
+    <div class="example-box">
+        <h3>Ví dụ minh họa</h3>
+        
+        <div class="example-item">
+            <p><b>Ví dụ 1:</b> Xác định các yếu tố của Elip (E): x&sup2;/25 + y&sup2;/9 = 1.</p>
+            <p><small>Giải: Ta có a&sup2;=25 ⇒ a=5; b&sup2;=9 ⇒ b=3. Suy ra c&sup2;=a&sup2;-b&sup2;=16 ⇒ c=4. Trục lớn 10, trục nhỏ 6, tiêu cự 8, tâm sai e=4/5.</small></p>
+        </div>
+
+        <div class="example-item">
+            <p><b>Ví dụ 2:</b> Lập PT chính tắc của Elip đi qua M(0;3) và có một tiêu điểm F₁( -4;0).</p>
+            <p><small>Giải: F₁(-4;0) ⇒ c=4. M(0;3) thuộc trục tung nên b=3. Ta có a&sup2;=b&sup2;+c&sup2;=9+16=25. PT là: x&sup2;/25 + y&sup2;/9 = 1.</small></p>
+        </div>
+
+        <div class="example-item">
+            <p><b>Ví dụ 3:</b> Tìm tọa độ tiêu điểm và phương trình tiệm cận của Hypebol (H): x&sup2;/16 - y&sup2;/9 = 1.</p>
+            <p><small>Giải: a&sup2;=16, b&sup2;=9 ⇒ c&sup2;=16+9=25 ⇒ c=5. Tiêu điểm F₁(-5;0), F₂(5;0). Tiệm cận y = &plusmn;(3/4)x.</small></p>
+        </div>
+
+        <div class="example-item">
+            <p><b>Ví dụ 4:</b> Lập PT chính tắc của Hypebol có tiêu cự bằng 10 và tâm sai e = 5/4.</p>
+            <p><small>Giải: 2c=10 ⇒ c=5. e=c/a=5/4 ⇒ a=4. Ta có b&sup2;=c&sup2;-a&sup2;=25-16=9. PT là: x&sup2;/16 - y&sup2;/9 = 1.</small></p>
+        </div>
+
+        <div class="example-item">
+            <p><b>Ví dụ 5:</b> Xác định tham số tiêu và đường chuẩn của Parabol (P): y&sup2; = 12x.</p>
+            <p><small>Giải: 2p=12 ⇒ p=6. Tham số tiêu p=6. Phương trình đường chuẩn x = -p/2 = -3.</small></p>
+        </div>
+
+        <div class="example-item">
+            <p><b>Ví dụ 6:</b> Lập PT chính tắc của Parabol đi qua điểm A(2;4).</p>
+            <p><small>Giải: Thay A(2;4) vào y&sup2;=2px ta có 4&sup2;=2p(2) ⇒ 16=4p ⇒ p=4. PT là: y&sup2; = 8x.</small></p>
+        </div>
+    </div>
+
+    <div class="exam-box">
+        <h2 style="color: var(--accent);">Đấu trường Conic (Time Challenge)</h2>
+        <div id="quiz-start-screen">
+            <p>Bạn có 15 giây cho mỗi câu hỏi. Sẵn sàng chưa?</p>
+            <button onclick="startExam()" style="background: var(--accent);">BẮT ĐẦU THI</button>
+        </div>
+
+        <div id="quiz-content" class="hidden">
+            <div id="timer">15</div>
+            <h3 id="question-text">Đang tải câu hỏi...</h3>
+            <div id="options-container"></div>
+            <p id="exam-feedback" style="margin-top: 15px; font-weight: bold;"></p>
+        </div>
+    </div>
+
+    <div class="feature-box">
+        <h3>Thẻ bài tập tự luyện (Flashcards)</h3>
+        <div class="practice-grid" id="practice-area"></div>
+        <button onclick="generateFlashcards()" style="margin-top: 15px; background: #475569; color: white;">Đổi bài tập mới</button>
+    </div>
+
+    <div class="feature-box">
+        <h3>Giải mã ADN Conic</h3>
+        <div class="input-group">
+            <input type="number" id="dnaA" placeholder="A">
+            <input type="number" id="dnaC" placeholder="C">
+            <input type="number" id="dnaF" placeholder="F">
+            <button onclick="calculateDNA()" style="background: var(--elip);">Tính thông số</button>
+        </div>
+        <div id="dna-result" style="display:none; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px;"></div>
+    </div>
+
+    <footer>
+        <p>© 2026 Conic Master Dashboard - "Học đêm không mỏi"</p>
+        <p style="letter-spacing: 2px; color: var(--primary);">--- MESSISKIBIDIAURASIGMA ---</p>
+    </footer>
+
+    <script>
+        function identifyConic() {
+            const A = parseFloat(document.getElementById('coeffA').value);
+            const C = parseFloat(document.getElementById('coeffC').value);
+            const res = document.getElementById('result');
+            res.style.display = 'block';
+            if (isNaN(A) || isNaN(C)) { res.innerHTML = "Nhập A và C!"; return; }
+            let type = (A*C > 0) ? (A === C ? "ĐƯỜNG TRÒN" : "ELIP") : (A*C < 0 ? "HYPERBOL" : "PARABOL");
+            res.innerHTML = `Kết quả: <b>${type}</b>`;
+        }
+
+        function calculateDNA() {
+            const A = parseFloat(document.getElementById('dnaA').value);
+            const C = parseFloat(document.getElementById('dnaC').value);
+            const F = parseFloat(document.getElementById('dnaF').value);
+            const res = document.getElementById('dna-result');
+            if (isNaN(A) || isNaN(C) || isNaN(F)) return;
+            res.style.display = "block";
+            if (A * C > 0) {
+                let a2 = Math.abs(F/A), b2 = Math.abs(F/C);
+                if (a2 < b2) [a2, b2] = [b2, a2];
+                res.innerHTML = `<b>ELIP:</b> a=&radic;${a2.toFixed(1)}, b=&radic;${b2.toFixed(1)}, c=&radic;${(a2-b2).toFixed(1)}`;
+            } else if (A * C < 0) {
+                let a2 = Math.abs(F/A), b2 = Math.abs(F/C);
+                res.innerHTML = `<b>HYPERBOL:</b> a=&radic;${a2.toFixed(1)}, b=&radic;${b2.toFixed(1)}, c=&radic;${(a2+b2).toFixed(1)}`;
+            } else res.innerHTML = "<b>PARABOL:</b> Hãy dùng dạng chuẩn y&sup2;=2px";
+        }
+
+        let timeLeft = 15;
+        let timerId;
+        let currentCorrect;
+
+        function startExam() {
+            document.getElementById('quiz-start-screen').classList.add('hidden');
+            document.getElementById('quiz-content').classList.remove('hidden');
+            nextQuestion();
+        }
+
+        function nextQuestion() {
+            clearInterval(timerId);
+            timeLeft = 15;
+            document.getElementById('timer').innerText = timeLeft;
+            document.getElementById('exam-feedback').innerText = "";
+            const type = Math.floor(Math.random() * 3); 
+            let qText = "";
+            let options = [];
+            let r = Math.floor(Math.random() * 5) + 2;
+
+            if(type === 0) {
+                let a2 = r*r, b2 = (r-1)*(r-1);
+                qText = `Cho Elip (E): x&sup2;/${a2} + y&sup2;/${b2} = 1. Tiêu cự 2c bằng?`;
+                currentCorrect = (2 * Math.sqrt(a2 - b2)).toFixed(2);
+                options = [currentCorrect, (Math.sqrt(a2-b2)).toFixed(2), (2*r).toString(), "10"];
+            } else if(type === 1) {
+                qText = `Đường tiệm cận của (H): x&sup2;/16 - y&sup2;/9 = 1 là?`;
+                currentCorrect = "y = &plusmn;0.75x";
+                options = ["y = &plusmn;0.75x", "y = &plusmn;1.33x", "y = &plusmn;0.5x", "y = &plusmn;4/3x"];
+            } else {
+                let p2 = r*2;
+                qText = `Tiêu điểm của Parabol y&sup2; = ${p2*2}x là?`;
+                currentCorrect = `F(${p2/2}, 0)`;
+                options = [`F(${p2/2}, 0)`, `F(${p2}, 0)`, `F(${-p2/2}, 0)`, `O(0,0)`];
+            }
+
+            document.getElementById('question-text').innerText = qText;
+            const container = document.getElementById('options-container');
+            container.innerHTML = "";
+            options.sort(() => Math.random() - 0.5);
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "quiz-option";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt, btn);
+                container.appendChild(btn);
+            });
+
+            timerId = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(timerId);
+                    document.getElementById('exam-feedback').innerText = "Hết giờ! Đáp án là: " + currentCorrect;
+                    setTimeout(nextQuestion, 2000);
+                }
+            }, 1000);
+        }
+
+        function checkAnswer(ans, btn) {
+            clearInterval(timerId);
+            if(ans === currentCorrect) {
+                btn.classList.add('correct');
+                document.getElementById('exam-feedback').innerText = "Chính xác!";
+            } else {
+                btn.classList.add('wrong');
+                document.getElementById('exam-feedback').innerText = "Sai rồi! Đáp án đúng: " + currentCorrect;
+            }
+            setTimeout(nextQuestion, 2000);
+        }
+
+        function generateFlashcards() {
+            const area = document.getElementById('practice-area');
+            area.innerHTML = "";
+            for(let i=0; i<2; i++) {
+                let r1 = Math.floor(Math.random() * 10) + 1;
+                let r2 = Math.floor(Math.random() * 10) + 1;
+                const card = document.createElement('div');
+                card.className = "practice-card";
+                card.innerHTML = `
+                    <p><b>Bài ${i+1}:</b> Lập PT chính tắc Conic đi qua điểm M(${r1}, ${r2}) và có tiêu cự 2c = 4.</p>
+                    <button onclick="this.nextElementSibling.style.display='block'" style="font-size: 0.7rem; padding: 5px;">Xem đáp án</button>
+                    <div class="solution">HD: Thay M vào PT và dùng mối liên hệ giữa a, b, c để giải.</div>
+                `;
+                area.appendChild(card);
+            }
+        }
+        window.onload = generateFlashcards;
+    </script>
+</body>
+</html>
